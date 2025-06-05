@@ -22,7 +22,7 @@ namespace OnlineStore.Services.Implementations
                 List<Review> items = JsonSerializer.Deserialize<List<Review>>(itemsStr);
                 if (items != null)
                 {
-                    return amount == null ? items : items.GetRange(0, (int)amount);
+                    return (amount == null || items.Count <= amount) ? items : items.GetRange(0, (int)amount);
                 }
             }
             return new List<Review>();

@@ -11,6 +11,8 @@ namespace OnlineStore
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IDatabaseService, JsonDBService>();
+            builder.Services.AddScoped<IReviewService, JsonReviewService>();
 
             var app = builder.Build();
 

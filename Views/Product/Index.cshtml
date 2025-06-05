@@ -1,7 +1,47 @@
-﻿@model OnlineStore.Models.Domain.Product
+﻿@using OnlineStore.Helpers.Html
+@model OnlineStore.Models.View.ProductPageModel
 
 @section Header {
-    <h1>@Model.Name</h1>
+    <h1>@Model.Product.Name</h1>
 }
 
-<p>Id: @Model.Id</p>
+<p>Id: @Model.Product.Id</p>
+
+<div id="reviews" class="mb-3">
+    <h3 class="mb-3">Reviews</h3>
+    <div class="mb-3">
+        @foreach (var review in Model.Reviews)
+        {
+            @Html.Review(review)
+        }
+    </div>
+
+    <div class="mb-3">
+        @using (Html.BeginForm("AddReview", "Product", FormMethod.Post))
+        {
+            <div class="form-group mb-3">
+                @Html.LabelFor(Model => Model.NewReview.Username, "Your name:", htmlAttributes: new { @class = "form-label" })
+                @Html.TextBoxFor(Model => Model.NewReview.Username)
+            </div>
+            <div class="form-group mb-3">
+                @Html.LabelFor(Model => Model.NewReview.Rating, "Your rating:", htmlAttributes: new { @class = "form-label" })
+                @Html.RadioButtonFor(Model => Model.NewReview.Rating, 1, htmlAttributes: new { id = "rating1" })
+                <label for="rating1">1</label>
+                @Html.RadioButtonFor(Model => Model.NewReview.Rating, 2, htmlAttributes: new { id = "rating2" })
+                <label for="rating2">2</label>
+                @Html.RadioButtonFor(Model => Model.NewReview.Rating, 3, htmlAttributes: new { id = "rating3" })
+                <label for="rating3">3</label>
+                @Html.RadioButtonFor(Model => Model.NewReview.Rating, 4, htmlAttributes: new { id = "rating4" })
+                <label for="rating4">4</label>
+                @Html.RadioButtonFor(Model => Model.NewReview.Rating, 5, htmlAttributes: new { id = "rating5" })
+                <label for="rating5">5</label>
+            </div>
+            <div class="form-group mb-3 w-50">
+                @Html.LabelFor(Model => Model.NewReview.Text, "Your review:", htmlAttributes: new { @class = "form-label" })
+                @Html.TextAreaFor(Model => Model.NewReview.Text);
+            </div>
+            @Html.HiddenFor(Model => Model.NewReview.ProductID, Model.Product.Id);
+            <button class="btn btn-primary" type="submit">Submit</button>
+        }
+    </div>
+</div>
