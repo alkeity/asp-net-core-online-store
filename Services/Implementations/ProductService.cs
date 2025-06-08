@@ -1,30 +1,66 @@
-﻿using OnlineStore.Models.Domain;
+﻿using Microsoft.Data.SqlClient;
+using OnlineStore.Models.Domain;
 using System.Xml.Linq;
 
 namespace OnlineStore.Services.Implementations
 {
     public class ProductService : IProductService
     {
-        private readonly List<Product> products = new List<Product>()
+        private readonly string _connectionString;
+
+        public ProductService(IConfiguration config)
         {
-            new Product() { Id = 0, Name = "Product 1" },
-            new Product() { Id = 1, Name = "Product 2" },
-            new Product() { Id = 2, Name = "Product 3" }
-        };
+            _connectionString = config.GetConnectionString("Default");
+        }
 
         public List<Product> GetProducts()
         {
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT ID, ProductName FROM Products", conn);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Product product = new Product()
+                            {
+                                Id = reader.GetInt64(0),
+                                Name = reader.GetString(1),
+                            };
+                            products.Add(product);
+                        }
+                    }
+                }
+            }
+
             return products;
         }
 
-        public Product? GetProductById(int id)
+        public Product? GetProductById(long id)
         {
-            foreach (Product product in products)
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                if (product.Id == id)
-                    return product;
-            }
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT ID, ProductName FROM Products WHERE ID = @id", conn);
+                cmd.Parameters.Add("@id", System.Data.SqlDbType.BigInt).Value = id;
 
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            return new Product() { Id = reader.GetInt64(0), Name = reader.GetString(1) };
+                        }
+                    }
+                }
+            }
             return null;
         }
     }

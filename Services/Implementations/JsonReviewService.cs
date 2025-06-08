@@ -20,7 +20,7 @@ namespace OnlineStore.Services.Implementations
             _databaseService.AddItems(reviews);
         }
 
-        public List<Review> GetReviews(int productID, int? amount)
+        public List<Review> GetReviews(long productID, int? amount)
         {
             List<Review> reviews = (List<Review>)_databaseService.GetItems(null);
             reviews = reviews.Where(review => review.ProductID == productID).ToList();

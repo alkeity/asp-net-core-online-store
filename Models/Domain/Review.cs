@@ -3,7 +3,7 @@
     public class Review
     {
         public int Id { get; set; }
-        public required int ProductID { get; set; }
+        public required long ProductID { get; set; }
         public DateTime Date { get; set; }
         public required string Username { get; set; }
         public required string Text { get; set; }
