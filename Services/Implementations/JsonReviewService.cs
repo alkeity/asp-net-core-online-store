@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using OnlineStore.Models.Domain;
+using OnlineStore.Models.Entities;
 
 namespace OnlineStore.Services.Implementations
 {

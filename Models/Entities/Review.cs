@@ -1,8 +1,8 @@
-﻿namespace OnlineStore.Models.Domain
+﻿namespace OnlineStore.Models.Entities
 {
     public class Review
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public required long ProductID { get; set; }
         public DateTime Date { get; set; }
         public required string Username { get; set; }

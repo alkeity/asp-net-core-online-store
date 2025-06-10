@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Text.Json;
-using OnlineStore.Models.Domain;
+using OnlineStore.Models.Entities;
 
 namespace OnlineStore.Services.Implementations
 {

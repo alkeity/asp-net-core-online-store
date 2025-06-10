@@ -1,4 +1,4 @@
-﻿using OnlineStore.Models.Domain;
+﻿using OnlineStore.Models.Entities;
 
 namespace OnlineStore.Models.View
 {

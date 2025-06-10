@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineStore.Models.Domain;
+using OnlineStore.Models.Entities;
 using OnlineStore.Models.View;
 using OnlineStore.Services;
 using OnlineStore.Services.Implementations;
