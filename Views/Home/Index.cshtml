@@ -1,23 +1,67 @@
 ﻿@using OnlineStore.Models.Entities
 
-@model OnlineStore.Models.View.HomePageViewModel
+@model OnlineStore.Models.Containers.Page<Product>
 
 @section Header {
     <h1>Список товаров</h1>
 }
 
-@if (Model.Products is not null)
+@if (Model.Items is not null)
 {
-    <ol class="list-group list-group-numbered">
-        @foreach (Product product in Model.Products)
-        {
-            <li class="list-group-item">
-                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
-                    @product.Name
-                </a>
-            </li>
-        }
-    </ol>
+    <div class="container-fluid mt-3">
+        <ul class="list-group">
+            @foreach (Product product in Model.Items)
+            {
+                <li class="list-group-item">
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                        @product.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    @* TODO breaks in pagination if too many pages *@
+    @if (Model.MaxPage > 1)
+    {
+        <div class="container-fluid mt-3">
+            <ul class="pagination position-relative bottom-0">
+                @if (Model.CurPage > 0)
+                {
+                    <li class="page-item"><a asp-route-page="@(Model.CurPage - 1)" class="page-link">&lt;</a></li>
+                }
+                else
+                {
+                <li class="page-item disabled"><a asp-route-page="@(Model.CurPage - 1)" class="page-link">&lt;</a></li>
+                }
+
+                @for (int i = 0; i < Model.CurPage; i++)
+                {
+                    <li class="page-item"><a asp-route-page="@(i)" class="page-link">@(i + 1)</a></li>
+                }
+
+                <li class="page-item active">
+                    <a asp-route-page="@(Model.CurPage)" class="page-link">
+                        @(Model.CurPage + 1) 
+                    </a>
+                    </li>
+
+                @for (int i = Model.CurPage + 1; i < Model.MaxPage + 1; i++)
+                {
+                    <li class="page-item"><a asp-route-page="@(i)" class="page-link">@(i + 1)</a></li>
+                }
+
+                @if (Model.CurPage < Model.MaxPage)
+                {
+                    <li class="page-item"><a asp-route-page="@(Model.CurPage + 1)" class="page-link">&gt;</a></li>
+                }
+                else
+                {
+                    <li class="page-item disabled"><a asp-route-page="@(Model.CurPage + 1)" class="page-link">&gt;</a></li>
+                }
+            </ul>
+        </div>
+    }
 }
 else
 {

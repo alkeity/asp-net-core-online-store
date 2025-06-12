@@ -1,11 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
+using OnlineStore.Models.Containers;
 using OnlineStore.Models.Entities;
 
 namespace OnlineStore.Data.Repositories.Implementations
 {
     public class ReviewRepository : BaseRepository, IReviewRepository
     {
-        public ReviewRepository(IConfiguration config) : base(config) { }
+        private readonly int REVIEWS_PER_PAGE_DEFAULT;
+
+        public ReviewRepository(IConfiguration config) : base(config)
+        {
+            REVIEWS_PER_PAGE_DEFAULT = config.GetValue<int>("ReviewsPerPage");
+        }
 
         public void Create(Review review)
         {
@@ -24,14 +30,7 @@ namespace OnlineStore.Data.Repositories.Implementations
                 cmd.Parameters.Add("@rating", System.Data.SqlDbType.TinyInt).Value = review.Rating;
                 cmd.Parameters.Add("@text", System.Data.SqlDbType.NText).Value = review.Text;
 
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Something went wrong while adding new review to db: {ex.Message}");
-                }
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -59,6 +58,48 @@ namespace OnlineStore.Data.Repositories.Implementations
             }
 
             return reviews;
+        }
+
+        public Page<Review> GetAllForProduct(long productId, int page, int amount)
+        {
+            if (page < 0) throw new ArgumentOutOfRangeException("Page number cannot be negative.");
+            if (amount < 0) amount = REVIEWS_PER_PAGE_DEFAULT;
+
+            List<Review> reviews = new List<Review>();
+            int reviewsTotal = 0;
+
+            using (SqlConnection conn = CreateConnection())
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand
+                    (
+                    "SELECT ID, PostDate, Username, Rating, ReviewText FROM Reviews WHERE ProductID = @productID " +
+                    "ORDER BY ID OFFSET @rowSkip ROWS FETCH NEXT @amount ROWS ONLY",
+                    conn
+                    );
+                cmd.Parameters.Add("@productID", System.Data.SqlDbType.BigInt).Value = productId;
+                cmd.Parameters.Add("rowSkip", System.Data.SqlDbType.Int).Value = page * amount;
+                cmd.Parameters.Add("amount", System.Data.SqlDbType.Int).Value = amount;
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read()) reviews.Add(ReadReview(reader, productId));
+                    }
+                }
+
+                cmd.CommandText = "SELECT COUNT(*) FROM Reviews WHERE ProductID = @productID";
+                reviewsTotal = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            return new Page<Review>()
+            {
+                CurPage = page,
+                MaxPage = Convert.ToInt32(Math.Ceiling((double)(reviewsTotal / amount))),
+                Items = reviews,
+                ItemAmount = amount
+            };
         }
 
         private Review ReadReview(SqlDataReader reader, long productID)

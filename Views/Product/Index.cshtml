@@ -5,12 +5,55 @@
     <h1>@Model.Product.Name</h1>
 }
 
-<p>Id: @Model.Product.Id</p>
+<p>Description: @Model.Product.Description</p>
 
 <div id="reviews" class="mb-3">
     <h3 class="mb-3">Reviews</h3>
+
+    @* TODO breaks in pagination if too many pages *@
+    @if (Model.ReviewContainer.MaxPage > 1)
+    {
+        <div class="container-fluid mt-3">
+            <ul class="pagination position-relative bottom-0">
+                @if (Model.ReviewContainer.CurPage > 0)
+                {
+                    <li class="page-item"><a asp-route-page="@(Model.ReviewContainer.CurPage - 1)" class="page-link">&lt;</a></li>
+                }
+                else
+                {
+                    <li class="page-item disabled"><a asp-route-page="@(Model.ReviewContainer.CurPage - 1)" class="page-link">&lt;</a></li>
+                }
+
+                @for (int i = 0; i < Model.ReviewContainer.CurPage; i++)
+                {
+                    <li class="page-item"><a asp-route-page="@(i)" class="page-link">@(i + 1)</a></li>
+                }
+
+                <li class="page-item active">
+                    <a asp-route-page="@(Model.ReviewContainer.CurPage)" class="page-link">
+                        @(Model.ReviewContainer.CurPage + 1)
+                    </a>
+                </li>
+
+                @for (int i = Model.ReviewContainer.CurPage + 1; i < Model.ReviewContainer.MaxPage + 1; i++)
+                {
+                    <li class="page-item"><a asp-route-page="@(i)" class="page-link">@(i + 1)</a></li>
+                }
+
+                @if (Model.ReviewContainer.CurPage < Model.ReviewContainer.MaxPage)
+                {
+                    <li class="page-item"><a asp-route-page="@(Model.ReviewContainer.CurPage + 1)" class="page-link">&gt;</a></li>
+                }
+                else
+                {
+                    <li class="page-item disabled"><a asp-route-page="@(Model.ReviewContainer.CurPage + 1)" class="page-link">&gt;</a></li>
+                }
+            </ul>
+        </div>
+    }
+
     <div class="mb-3">
-        @foreach (var review in Model.Reviews)
+        @foreach (var review in Model.ReviewContainer.Items)
         {
             @Html.Review(review)
         }

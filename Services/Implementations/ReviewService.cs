@@ -1,4 +1,5 @@
 ﻿using OnlineStore.Data.Repositories;
+using OnlineStore.Models.Containers;
 using OnlineStore.Models.Entities;
 
 namespace OnlineStore.Services.Implementations
@@ -18,9 +19,14 @@ namespace OnlineStore.Services.Implementations
             _repository.Create(review);
         }
 
-        public List<Review> GetReviews(long productID, int? amount)
+        public List<Review> GetReviews(long productID)
         {
             return _repository.GetAllForProduct(productID);
+        }
+
+        public Page<Review> GetReviews(long productID, int page, int amount = -1)
+        {
+            return _repository.GetAllForProduct(productID, page, amount);
         }
     }
 }

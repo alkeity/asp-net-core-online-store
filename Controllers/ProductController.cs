@@ -19,7 +19,7 @@ namespace OnlineStore.Controllers
 
         [HttpGet]
         [Route("{controller}/{action}/{id:int?}")]
-        public IActionResult Index(int? id)
+        public IActionResult Index(int? id, int page = 0)
         {
             if (id == null)
                 return RedirectToAction("Index", "Home");
@@ -29,11 +29,12 @@ namespace OnlineStore.Controllers
             if (product == null)
                 return RedirectToAction("Index", "Home");
 
+            page = Math.Clamp(page, 0, int.MaxValue);
             ProductPageModel pageModel = new ProductPageModel()
             {
                 Product = product,
-                Reviews = _reviewService.GetReviews(product.Id, 10),
-                NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous" }
+                NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous" },
+                ReviewContainer = _reviewService.GetReviews(product.Id, page)
             };
 
             return View(pageModel);
@@ -51,7 +52,7 @@ namespace OnlineStore.Controllers
 
             Product product = _productService.GetProductById(pageModel.NewReview.ProductID);
             pageModel.Product = product;
-            pageModel.Reviews = _reviewService.GetReviews(product.Id, 10);
+            pageModel.ReviewContainer = _reviewService.GetReviews(product.Id, 0);
             pageModel.NewReview.Text = "";
             pageModel.NewReview.Rating = 5;
             return View("/Views/Product/Index.cshtml", pageModel);
