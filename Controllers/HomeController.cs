@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStore.Data.Models;
 using OnlineStore.Models.Containers;
-using OnlineStore.Models.Entities;
 using OnlineStore.Models.View;
 using OnlineStore.Services;
 

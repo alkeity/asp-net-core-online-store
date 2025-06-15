@@ -1,33 +1,44 @@
 ﻿using Microsoft.Data.SqlClient;
-using OnlineStore.Data.Repositories;
+using OnlineStore.Data;
+using OnlineStore.Data.Models;
 using OnlineStore.Models.Containers;
-using OnlineStore.Models.Entities;
 using System.Xml.Linq;
 
 namespace OnlineStore.Services.Implementations
 {
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repository;
+        private readonly AppDbContext _db;
+        private readonly int PRODUCTS_PER_PAGE_DEFAULT;
 
-        public ProductService(IProductRepository repository)
+        public ProductService(IConfiguration config, AppDbContext db)
         {
-            _repository = repository;
+            _db = db;
+            PRODUCTS_PER_PAGE_DEFAULT = config.GetValue<int>("ProductsPerPage");
         }
 
         public List<Product> GetProducts()
         {
-            return _repository.GetAll();
+            return _db.Products.ToList();
         }
 
-        public Page<Product> GetProducts(int page)
+        public Page<Product> GetProducts(int page, int amount = -1)
         {
-            return _repository.GetAll(page);
+            if (amount < 0) amount = PRODUCTS_PER_PAGE_DEFAULT;
+            double pages = _db.Products.Count() / amount;
+
+            return new Page<Product>()
+            {
+                CurPage = page,
+                MaxPage = Convert.ToInt32(Math.Ceiling(pages)),
+                Items = _db.Products.ToList(), // PagedList.MVC?
+                ItemAmount = amount
+            };
         }
 
         public Product? GetProductById(long id)
         {
-            return _repository.GetById(id);
+            return _db.Products.Find(id);
         }
     }
 }

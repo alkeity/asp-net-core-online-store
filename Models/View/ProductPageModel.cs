@@ -1,5 +1,5 @@
-﻿using OnlineStore.Models.Containers;
-using OnlineStore.Models.Entities;
+﻿using OnlineStore.Data.Models;
+using OnlineStore.Models.Containers;
 
 namespace OnlineStore.Models.View
 {

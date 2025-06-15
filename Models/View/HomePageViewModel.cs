@@ -1,4 +1,4 @@
-﻿using OnlineStore.Models.Entities;
+﻿using OnlineStore.Data.Models;
 
 namespace OnlineStore.Models.View
 {

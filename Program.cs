@@ -1,5 +1,5 @@
-using OnlineStore.Data.Repositories;
-using OnlineStore.Data.Repositories.Implementations;
+using Microsoft.EntityFrameworkCore;
+using OnlineStore.Data;
 using OnlineStore.Services;
 using OnlineStore.Services.Implementations;
 
@@ -13,9 +13,16 @@ namespace OnlineStore
 
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<BaseRepository>();
-            builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddDbContext<AppDbContext>
+                (
+                options =>
+                {
+                    string? connectionString = builder.Configuration.GetConnectionString("Default");
+                    if (connectionString == null) throw new MissingFieldException("Failed to get connection string.");
+
+                    options.UseSqlServer(connectionString);
+                }
+                );
 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();

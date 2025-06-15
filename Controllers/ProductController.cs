@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineStore.Models.Entities;
+using OnlineStore.Data.Models;
 using OnlineStore.Models.View;
 using OnlineStore.Services;
 using OnlineStore.Services.Implementations;
@@ -33,7 +33,7 @@ namespace OnlineStore.Controllers
             ProductPageModel pageModel = new ProductPageModel()
             {
                 Product = product,
-                NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous" },
+                NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous", Product = product },
                 ReviewContainer = _reviewService.GetReviews(product.Id, page)
             };
 

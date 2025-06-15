@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineStore.Models.Entities;
+using OnlineStore.Data.Models;
 using System.Text.Encodings.Web;
 
 namespace OnlineStore.Helpers.Html
