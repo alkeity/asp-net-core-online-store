@@ -11,6 +11,9 @@ namespace OnlineStore.Data.Models
         [ForeignKey("Product")]
         public required long ProductID { get; set; }
         public required Product Product { get; set; }
+        [ForeignKey("User")]
+        public required long UserID { get; set; }
+        public required User User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [StringLength(128, MinimumLength = 3)]
         public required string Username { get; set; }

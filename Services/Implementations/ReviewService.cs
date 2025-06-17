@@ -1,6 +1,8 @@
-﻿using OnlineStore.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineStore.Data;
 using OnlineStore.Data.Models;
 using OnlineStore.Models.Containers;
+using OnlineStore.Models.DTO;
 
 namespace OnlineStore.Services.Implementations
 {
@@ -23,22 +25,32 @@ namespace OnlineStore.Services.Implementations
 
         public List<Review> GetReviews(long productID)
         {
-            return _db.Reviews.Where(review => review.ProductID == productID).ToList();
+            return _db.Reviews
+                .Where(review => review.ProductID == productID)
+                .Include(review => review.User)
+                .ToList();
         }
 
-        public Page<Review> GetReviews(long productID, int page, int amount = -1)
+        public Page<ReviewDTO> GetReviews(long productID, int page, int amount = -1)
         {
             if (page < 0) throw new ArgumentOutOfRangeException("Page number cannot be negative.");
             if (amount < 0) amount = REVIEWS_PER_PAGE_DEFAULT;
 
             int reviewsTotal = _db.Reviews.Where(review => review.ProductID == productID).Count();
 
-            return new Page<Review>()
+            List<Review> reviews = _db.Reviews.Where(review => review.ProductID == productID).ToList(); // TODO pagination
+            List<ReviewDTO> reviewsDTO = new List<ReviewDTO>();
+            foreach (Review review in reviews)
+            {
+                reviewsDTO.Add(ReviewDTO.FromEntity(review));
+            }
+
+            return new Page<ReviewDTO>()
             {
                 CurPage = page,
                 MaxPage = Convert.ToInt32(Math.Ceiling((double)(reviewsTotal / amount))),
                 ItemAmount = amount,
-                Items = _db.Reviews.Where(review => review.ProductID == productID).ToList() // TODO pagination
+                Items = reviewsDTO
             };
         }
     }

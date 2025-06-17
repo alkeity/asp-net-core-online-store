@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineStore.Data.Models;
+using OnlineStore.Models.DTO;
 using System.Text.Encodings.Web;
 
 namespace OnlineStore.Helpers.Html
 {
     public static class ReviewDisplayBootstrapHelper
     {
-        public static HtmlString Review(this IHtmlHelper helper, Review review)
+        public static HtmlString Review(this IHtmlHelper helper, ReviewDTO review)
         {
             TagBuilder divCard = new TagBuilder("div");
             divCard.Attributes.Add("class", "card mb-3");

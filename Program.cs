@@ -26,6 +26,7 @@ namespace OnlineStore
 
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

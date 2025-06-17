@@ -3,10 +3,12 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
+        <title>@(ViewBag.Title ?? "Интернет-магазин")</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <title>@(ViewBag.Title ?? "Интернет-магазин")</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     </head>
+
     <body>
         <div class="container-md">
             @if (IsSectionDefined("Header"))

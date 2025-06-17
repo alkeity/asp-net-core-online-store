@@ -33,7 +33,7 @@ namespace OnlineStore.Controllers
             ProductPageModel pageModel = new ProductPageModel()
             {
                 Product = product,
-                NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous", Product = product },
+                //NewReview = new Review() { ProductID = product.Id, Rating = 5, Text = "", Username = "Anonymous", Product = product },
                 ReviewContainer = _reviewService.GetReviews(product.Id, page)
             };
 
@@ -44,17 +44,17 @@ namespace OnlineStore.Controllers
         [Route("{controller}/{action}")]
         public IActionResult AddReview(ProductPageModel pageModel)
         {
-            if (pageModel.NewReview.ProductID == null || pageModel.NewReview.Username == null || pageModel.NewReview.Rating < 1 || pageModel.NewReview.Rating > 5 || pageModel.NewReview.Text == null)
-            {
-                return BadRequest();
-            }
-            _reviewService.AddReview(pageModel.NewReview);
+            //if (pageModel.NewReview.ProductID == null || pageModel.NewReview.Username == null || pageModel.NewReview.Rating < 1 || pageModel.NewReview.Rating > 5 || pageModel.NewReview.Text == null)
+            //{
+            //    return BadRequest();
+            //}
+            //_reviewService.AddReview(pageModel.NewReview);
 
-            Product product = _productService.GetProductById(pageModel.NewReview.ProductID);
-            pageModel.Product = product;
-            pageModel.ReviewContainer = _reviewService.GetReviews(product.Id, 0);
-            pageModel.NewReview.Text = "";
-            pageModel.NewReview.Rating = 5;
+            //Product product = _productService.GetProductById(pageModel.NewReview.ProductID);
+            //pageModel.Product = product;
+            //pageModel.ReviewContainer = _reviewService.GetReviews(product.Id, 0);
+            //pageModel.NewReview.Text = "";
+            //pageModel.NewReview.Rating = 5;
             return View("/Views/Product/Index.cshtml", pageModel);
         }
     }
